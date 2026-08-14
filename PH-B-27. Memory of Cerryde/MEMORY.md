@@ -29,3 +29,4 @@
 - [Obsidian 볼트 경로](<03. reference/reference_obsidian_vault_path.md>) — 사용자 폴더는 `perrykim` 이 아니라 `psw95`. ID 만 주어져도 볼트·홈·드라이브까지 훑어 찾을 것
 - [폰에서 19맥 접속 (Termius)](<03. reference/reference_phone_ssh_to_19mac.md>) — 주소는 `100.108.46.37`/`psw95`. `address already in use` 는 주소 충돌이 아니라 아이폰 Tailscale 이 꺼진 것
 - [reference_token_burn_is_cli_not_slack](<03. reference/reference_token_burn_is_cli_not_slack.md>) — 토큰 과소비의 진범은 슬랙 봇이 아니라 19맥의 장시간 CLI 세션 — 비용은 제곱으로 늘어난다
+- [공유 규칙과 rules-sync](<03. reference/reference_rules_sync_shared_repo.md>) — STYLE·DESIGN 은 깃허브 `psw95master/PH-A-9` 한 벌을 베리티·팹·세리 셋이 공유. 받아오기는 세션 시작 시 자동, 올리기는 `rules-sync push "이유"` 수동. 규칙은 공유·기억은 기기별 (260814 배선)
