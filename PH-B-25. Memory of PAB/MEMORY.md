@@ -12,6 +12,7 @@
 - [Guide file versioning](<01. feedback/feedback_guide_file_versioning.md>) — 🔴 **드라이브는 "파일 보관"이지 "버전 보관"이 아니다** (260814 교정). 버전을 남길지는 **자료 유형**이 정하고, 최종 자료는 과거 버전을 지우고 최신본만 남긴다. 버전별 파일(`_v1.0`…)은 가이드·기획 문서 유형에 한정. 에이전트 규칙 문서(`00. PH-B-24. Memory of comm/`)는 버전 안 쌓음. ⚠️ 드라이브는 끊어 읽기가 안 되니 **2만 자 안쪽 유지**
 - [iCloud는 허브다](<01. feedback/feedback_icloud_hub_architecture.md>) — 실물은 옵시디언·구글드라이브에 있고 iCloud엔 **가상본만**. 노션이 대장(`PZ-B. Files`)이고 파일 ID는 노션 auto-increment가 매긴다. ⚠️ 가상본은 셸로 못 따라감 — `osascript`로 풀 것
 - [로그 속 링크는 같이 연다](<01. feedback/feedback_log_reference_links_autofollow.md>) — 로그에 박힌 노션·드라이브 링크는 출처가 아니라 본문의 일부. 지시 없어도 먼저 다 열고 답할 것. 작성 시 `🔗 참고자료 — 읽을 때 함께 열 것` 형식 사용
+- [베리티 규칙은 손으로 전달](<01. feedback/feedback_verity_rules_manual_handoff.md>) — 베리티는 깃허브 커넥터로 **비공개 저장소를 못 읽는다**(260814 실측, 앱 설치돼 있어도 404). 규칙을 고쳤으면 **"베리티에게 파일 직접 주세요"를 경로와 함께 반드시 리마인드**할 것. 안 하면 베리티만 조용히 옛 규칙으로 남는다
 - [메모리 파일 병합 금지](<01. feedback/feedback_memory_files_stay_split.md>) — 하나로 합치는 안은 260726에 검토·기각됨, 재제안 말 것
 - [반대편 기기 메모리는 덮어쓰지 말고 얹기](<01. feedback/feedback_other_agent_memory_merge_not_replace.md>) — 팹↔세리는 같은 이름이어도 별개 파일. 원문 그대로 두고 교정 블록만 위에 얹을 것. ⚠️ scp 는 `.overwritten/` 백업이 안 남는다. **규칙 문서(`00. PH-B-24. Memory of comm/`)는 복사가 맞고, 메모리 파일은 병합** (260814)
 - [Skill registration routine](<01. feedback/feedback_skill_registration_routine.md>) — full steps for registering a skill; always finish by mirroring the `~/.claude/skills/` symlink on BOTH Macs, not just one
