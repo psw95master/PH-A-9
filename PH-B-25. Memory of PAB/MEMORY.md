@@ -40,7 +40,7 @@
 - [옵시디언 ID는 `OBS-*`](<03. reference/reference_obsidian_obs_id_system.md>) — 노션 `ESL-*`과 번호대가 갈라져 있다 (충돌 방지, 260804 결정). ⚠️ 자동 채번은 260804에 철거돼 지금은 수동 — 템플릿이 없는 건 고장이 아니다
 - [Sandbox blocks tmux spawn](<03. reference/reference_sandbox_blocks_tmux_spawn.md>) — tmux servers started from a Cerry session die in ~1s; never design bots that spawn tmux
 - [settings.json은 동기화 안 됨](<03. reference/reference_settings_json_not_synced.md>) — 기기별 로컬 파일. 260728 기준 양쪽 permissions 동일. deny 없이 allow만 복사하지 말 것
-- [규칙·메모리 사본은 깃허브 PH-A-9 한 곳](<03. reference/reference_shared_rules_git_repo.md>) — 작업본은 양 맥 `~/.claude/agent-hub/`. `memory/00. PH-B-24. Memory of comm` 는 그리로 가는 **심링크**. 규칙은 `rules-sync push "이유"`(수동 커밋), 메모리 사본은 `cerry-export`(자동 커밋). ⚠️ 같은 기기 안 심링크는 OK·기기 건너뛰는 심링크는 금지 (260814)
+- [규칙·메모리 사본은 깃허브 PH-A-9 한 곳](<03. reference/reference_shared_rules_git_repo.md>) — 작업본은 양 맥 `~/.claude/agent-hub/`. `memory/00. PH-B-24. Memory of comm` 는 그리로 가는 **심링크**. 규칙은 `rules-sync push "이유"`(수동 커밋), 메모리 사본은 `cerry-export`(자동 커밋). 커밋 메시지는 **`[팹]`/`[세리]`/`[베리티]`로 시작** — 깃허브 계정이 하나라 안 적으면 구분 불가. ⚠️ 커밋 작성자를 스크립트에서 지정하지 말 것(계정이 갈린다). 같은 기기 안 심링크는 OK·기기 건너뛰는 심링크는 금지 (260814)
 - [SSH bridge between Macs](<03. reference/reference_ssh_bridge_between_macs.md>) — `ssh mba26` reaches the 2026 Air from the 2019 MBP over Tailscale (user `perrykim` there vs `psw95` here), key auth already works; reverse alias `19macbook` → 100.108.46.37
 - [reference_three_terminal_command_map](<03. reference/reference_three_terminal_command_map.md>) — 26맥/19맥/슬랙 세 갈래 터미널의 제어 명령어 지도. `cerryde claude`(리모트컨트롤+웹창 자동)가 홈이 아닌 `~/projects`에서 시작하는 이유 포함
 - [reference_token_burn_is_cli_not_slack](<03. reference/reference_token_burn_is_cli_not_slack.md>) — 토큰 과소비의 진범은 슬랙 봇이 아니라 19맥의 장시간 CLI 세션 — 비용은 제곱으로 늘어난다
