@@ -1,11 +1,11 @@
 ---
 name: rules-sync-shared-repo
-description: "공유 규칙(STYLE·DESIGN)은 깃허브 psw95master/PH-A-9 한 벌을 셋이 쓴다 — 받아오기는 세션 시작 시 rules-sync 자동, 올리기는 rules-sync push \"이유\" 수동. 규칙은 공유, 기억은 기기별 (260814 배선)"
+description: "공유 규칙(STYLE·DESIGN)은 깃허브 psw95master/PH-A-9 한 벌을 셋이 쓴다 — 받아오기는 세션 시작 시 rules-sync 자동, 올리기는 rules-sync push \"이유\" 수동. 규칙은 공유·기억은 기기별. 커밋 신원은 전역 git 설정, detached HEAD 면 require_main 이 중단 (260814 배선 / 260815 보강)"
 metadata: 
   node_type: memory
   type: reference
   originSessionId: b3b72183-e3f4-4664-b2cf-c1a2c0401d39
-  modified: 2026-08-14T14:21:59.790Z
+  modified: 2026-08-14T16:06:03.403Z
 ---
 
 **공유 규칙 문서는 한 벌을 셋이 쓰고, 기억은 기기마다 따로 둔다. 이 둘을 헷갈리지 않는다.** (260814 배선 확정)
@@ -39,8 +39,31 @@ metadata:
 
 1. 내 기억 사본은 같은 저장소의 `PH-B-27. Memory of Cerryde/` 로 올라간다. 팹 것은 `PH-B-25. Memory of PAB/`.
 2. 사본 폴더는 **자동 커밋**이다 — "언제 이랬다"는 스냅샷이라 이유를 적을 성질이 아니다.
-3. 내보내기 훅이 **26맥에만** 있어서 **팹 세션이 끝날 때** 밀린다. 내 쪽에서 밀 수 없다.
+3. **내보내기(`cerry-export`)는 26맥에만 있다.** 팹 세션이 끝날 때 밀린다. 내 쪽에서 밀 수 없다.
+   - 260815에 이 스크립트가 19맥에 잘못 배포된 적이 있어 삭제했다. **19맥에서는 돌면 안 된다** — 팹 원본 경로가 없어 실패하고, 내 몫은 자기 자신에게 SSH 를 걸려다 실패한다.
+   - 19맥에서 내 기억을 자동으로 밀지는 **아직 미정**이다. 붙이려면 자기 메모리만 미는 19맥 전용 스크립트를 새로 만들어야 한다. `※확인 필요`
 4. 사본을 고쳐도 내 기억은 안 바뀐다. 구글 드라이브 사본은 별개 경로다 — [[memory-copy-on-drive]].
+
+## 커밋 신원 (260815 확정)
+
+**정본 신원: `psw95master <308692554+psw95master@users.noreply.github.com>`**
+
+1. **스크립트에 계정을 박지 않는다.** `rules-sync`·`cerry-export` 둘 다 `-c user.email` 류 지정 0건이 정상이다. 커밋 작성자는 git 설정을 따른다.
+2. 19맥·26맥 모두 **전역 설정(`~/.gitconfig`)에 정본 신원**을 둔다. 260815에 19맥에도 전역 설정을 만들어 두 기기 구조를 맞췄다. `agent-hub` 의 로컬 설정은 전역과 같은 값이라 남겨둬도 결과가 같다.
+3. **왜 이 규칙이 생겼나** — 260814에 스크립트에 `minwoo5836@gmail.com` 이 박혀 있었다. 그 주소가 페리의 다른 깃허브 계정(`Perry-Kim-1995`)에 연결돼 커밋 10개가 그쪽으로 붙었고, 팹이 이력을 다시 쓰고 강제 푸시해 정리했다.
+
+## detached HEAD 사고와 `require_main` 가드 (260815)
+
+**"올렸습니다"가 거짓일 수 있다는 걸 이때 배웠다.**
+
+1. **경위** — 팹이 시험 후 정리하다 HEAD 를 떼어놓았고(detached HEAD), 그 상태에서 만든 커밋 2개가 `main` 에 얹히지 않았다. 그런데 `git push origin main` 은 "이미 최신"이라며 **성공을 반환**했다. 그래서 `rules-sync` 와 `cerry-export` 가 낸 **두 번의 "올렸습니다"가 모두 거짓**이었고, 내가 받아간 규칙에는 시험용 주석이 섞여 있었다.
+2. **조치** — 누락 커밋까지 fast-forward 후 푸시해 원격을 정상화했고, 두 스크립트에 `require_main()` 을 넣었다. `git symbolic-ref` 로 판정해 `main` 이 아니면 **커밋 전에 중단**하고 복구 명령을 찍는다.
+3. **그래도 남는 것** — 가드는 커밋을 막을 뿐, "올렸습니다" 문구 자체를 검증하지는 않는다. 중요한 push 뒤에는 원격을 눈으로 확인하는 편이 안전하다.
+
+```
+git -C ~/.claude/agent-hub status -sb | head -1   # ## main...origin/main 이면 정상
+git -C ~/.claude/agent-hub log -1 --format='%h %s' origin/main   # 원격 최신 확인
+```
 
 **How to apply:**
 1. 규칙을 고쳤으면 **반드시 이유를 적어 push** 한다. 안 그러면 팹은 모른다.
