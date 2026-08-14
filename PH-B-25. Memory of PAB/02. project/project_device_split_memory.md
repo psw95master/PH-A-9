@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: project
   originSessionId: 2c1e2d55-4f1d-4e0f-a7f0-1a688228f1f3
-  modified: 2026-08-14T12:38:54.277Z
+  modified: 2026-08-14T12:42:23.168Z
 ---
 
 **2026-07-29 개편.** 두 맥이 같은 메모리를 나눠 쓰던 구조를 끝냈다. 이제 에이전트는 **기기 단위로 나뉜다.**
@@ -24,10 +24,10 @@ metadata:
 
 > ⚠️ **페리 확인용 사본 자리 (260814 확정 — 깃허브 비공개 저장소 한 곳).**
 > 두 에이전트의 메모리가 읽기 전용 사본으로 올라간다 (심링크·가상본 아님 — 26맥의 `cerry-export` 가 세션 종료 시 단방향 rsync 후 자동 커밋·푸시).
-> - 저장소 : `psw95master/PH-A-9-memory` (**비공개**) → https://github.com/psw95master/PH-A-9-memory
-> - 팹 : `PH-B-25. Memory of PAB/`
-> - 세리 : `PH-B-27. Memory of Cerryde/`
-> - 26맥 작업본 : `~/.claude/memory-mirror/`
+> - 저장소 : `psw95master/PH-A-9` (**비공개**) → https://github.com/psw95master/PH-A-9
+>   **규칙과 한 저장소를 쓴다** — 저장소가 늘면 관리가 어렵다는 페리 판단(260814). 처음엔 `PH-A-9-memory` 를 따로 팠다가 같은 날 통합했다.
+> - 팹 : `PH-B-25. Memory of PAB/` · 세리 : `PH-B-27. Memory of Cerryde/` · 공유 규칙 : `rules/`
+> - 26맥 작업본 : `~/.claude/agent-hub/` (19맥에도 같은 이름으로 있다)
 >
 > 🔴 **구글 드라이브 사본은 260814에 삭제했다.** 옛 경로(`01. Project Hub / PH-A-9. AI Agent / PH-B-25`·`PH-B-27`)는 **이제 없다** — 기억에서 꺼내 쓰지 말 것.
 >

@@ -15,11 +15,11 @@
 
 ## 진행 중인 일 (project)
 
-- [device-split-memory](<02. project/project_device_split_memory.md>) — 260729 R&R 개편 — 팹(26맥)과 세리(19맥)는 메모리를 공유하지 않는다. 각자 로컬 실폴더에 두고, 페리 확인용 읽기 전용 사본만 내보낸다. **사본 자리는 구글 드라이브**(`PH-B-25. Memory of PAB`, 260813 확정 — 이름·자리 자주 바뀜). 볼트가 아니라 드라이브인 이유는 **노션 대장에 붙일 URL**. 사본 자리를 정할 땐 보기 품질보다 URL이 나오는지를 먼저 물을 것. **세리 사본은 260814에 `PH-B-27. Memory of Cerryde` 로 배선됨** — 단 팹 세션이 끝날 때 밀린다. 소속·직무·주요 업무·들어오는 길 표 포함
+- [device-split-memory](<02. project/project_device_split_memory.md>) — 260729 R&R 개편 — 팹(26맥)과 세리(19맥)는 메모리를 공유하지 않는다. 각자 로컬 실폴더에 두고, 페리 확인용 읽기 전용 사본만 내보낸다. **사본 자리는 깃허브 비공개 저장소 `PH-A-9`** — 규칙과 한 저장소를 쓴다 (260814 확정, 구글 드라이브 사본은 같은 날 삭제 — 옛 경로 쓰지 말 것). 깃인 이유는 드라이브가 덮어쓰기라 **"뭐가 달라졌는지"를 못 봤기 때문**. 세리 사본도 여기 있고, 팹 세션이 끝날 때 밀린다. 소속·직무·주요 업무·들어오는 길 표 포함
 
 ## 참고 정보 (reference)
 
-- [공용 규칙은 깃허브 PH-A-9](<03. reference/reference_shared_rules_git_repo.md>) — `00. rules/` 는 사본이 아니라 **깃 작업본**. 양 맥이 같은 비공개 저장소를 쓴다. `rules-sync` 로 받아오고(자동), `rules-sync push "이유"` 로 올린다(수동). ⚠️ 심링크 안 쓰는 이유·`.git` 제외 포함 (260814)
+- [규칙·메모리 사본은 깃허브 PH-A-9 한 곳](<03. reference/reference_shared_rules_git_repo.md>) — 작업본은 양 맥 `~/.claude/agent-hub/`. `memory/00. rules` 는 그리로 가는 **심링크**. 규칙은 `rules-sync push "이유"`(수동 커밋), 메모리 사본은 `cerry-export`(자동 커밋). ⚠️ 같은 기기 안 심링크는 OK·기기 건너뛰는 심링크는 금지 (260814)
 - [19맥 전원 복원력](<03. reference/reference_19mac_power_resilience.md>) — 항상 집에 있는 원격 전용 기기. `acwake 1` + `disablesleep 1`(260729, 뚜껑 닫아도 안 잠). 한번 잠들면 원격으로 못 깨움 — 완전 종료도 사람 필요
 - [19맥 화면 공유 주소](<03. reference/reference_19mac_screen_sharing_address.md>) — Cmd+K는 항상 `vnc://100.108.46.37`. 집 랜 주소·SSH 별명은 파인더에서 안 통함. "원격 접속 안 됨"은 19맥 고장이 아니라 26맥이 붙은 네트워크부터 볼 것
 - [19맥 원격 재부팅](<03. reference/reference_19mac_remote_reboot.md>) — `fdesetup authrestart`로 무인 재부팅, Tailscale은 이제 GUI 로그인 없이 복구됨 (LAN 172.30.1.23은 안전망)
