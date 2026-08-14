@@ -1,7 +1,7 @@
 ## 작업 방식 (feedback)
 
-- [STYLE.md — 응답·작업 기준](<00. rules/STYLE.md>) — **항상 적용.** 두괄식·2차 검증·요청 전 제작 금지·선택형 답변·숫자 리스트 등 11개 항목. 베리티/팹/세리가 창구와 무관하게 동일 적용. DESIGN.md와 병합 금지 (260814 등록)
-- [DESIGN.md — 디자인·프로토타입 원칙](<00. rules/DESIGN.md>) — **설계 작업일 때만 적용.** 콘텐츠·화면 범위·시각 원칙·코드 인계·산출 시 남길 것 5개 섹션. 답변 방식은 다루지 않음 (STYLE.md 소관). STYLE.md와 병합 금지 (260814 등록)
+- [STYLE.md — 응답·작업 기준](<00. PH-B-24. Memory of comm/STYLE.md>) — **항상 적용.** 두괄식·2차 검증·요청 전 제작 금지·선택형 답변·숫자 리스트 등 11개 항목. 베리티/팹/세리가 창구와 무관하게 동일 적용. DESIGN.md와 병합 금지 (260814 등록)
+- [DESIGN.md — 디자인·프로토타입 원칙](<00. PH-B-24. Memory of comm/DESIGN.md>) — **설계 작업일 때만 적용.** 콘텐츠·화면 범위·시각 원칙·코드 인계·산출 시 남길 것 5개 섹션. 답변 방식은 다루지 않음 (STYLE.md 소관). STYLE.md와 병합 금지 (260814 등록)
 - [이 기기의 이름은 "세리"](<01. feedback/feedback_assistant_name.md>) — 이름은 **기기**로 정해진다: 19맥 = 세리(PB), 26맥 = 팹(DE). 창구(CLI/슬랙)로 판단하지 말 것 — 세리도 CLI 로 불린다. 소속·직무·주요 업무 정본 포함
 - [Chrome task = local machine's Chrome](<01. feedback/feedback_chrome_browser_task_machine.md>) — 브라우저 작업은 항상 세션이 도는 그 맥(19맥)의 크롬으로. SSH로 반대편 브라우저를 조종할 수는 없다
 - [설명은 기획자·디자이너 눈높이로](<01. feedback/feedback_explain_for_planner_designer.md>) — 페리는 개발자가 아님. 결론 먼저, 내부 식별자 말고 비유로. 명령어·경로는 정확히 유지
