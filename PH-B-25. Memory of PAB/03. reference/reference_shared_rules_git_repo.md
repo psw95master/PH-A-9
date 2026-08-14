@@ -16,7 +16,7 @@ metadata:
 ├── PH-B-25. Memory of PAB/        ← 팹 메모리 사본
 └── PH-B-27. Memory of Cerryde/    ← 세리 메모리 사본
 
-memory/00. rules  →(심링크)→  ~/.claude/agent-hub/PH-B-24. Memory of comm
+memory/00. PH-B-24. Memory of comm  →(심링크)→  ~/.claude/agent-hub/PH-B-24. Memory of comm
 ```
 
 > 📌 **폴더 이름은 260814에 `rules/` → `PH-B-24. Memory of comm` 으로 바뀌었다.** 형제 폴더(`PH-B-25`/`PH-B-27`)와 이름 규칙을 맞춘 것이다. **`rules/` 를 찾지 말 것.** 또 바뀌면 `rules-sync` 의 `RULES_DIR` 한 줄만 고치면 된다.
@@ -36,11 +36,11 @@ memory/00. rules  →(심링크)→  ~/.claude/agent-hub/PH-B-24. Memory of comm
 **Why 깃인가 (드라이브·볼트를 버린 이유):** 드라이브 사본은 매번 덮어써져 **"지난번과 뭐가 달라졌는지"를 볼 수 없었다.** 260814에 팹이 세리 메모리를 통째로 덮어쓴 사고가 있었는데 깃이었다면 바로 보였을 일이다 ([[feedback-other-agent-memory-merge-not-replace]]). 덤으로 깃허브는 마크다운을 렌더하고 노션에 붙일 URL 도 준다.
 
 **심링크에 대하여 — 되는 것과 안 되는 것을 구분할 것**
-1. ✅ **같은 기기 안**의 고정 경로 심링크(`memory/00. rules` → `agent-hub/PH-B-24. Memory of comm`)는 쓴다. 규칙 실물을 한 벌로 두면서 메모리 폴더에서 "서랍"으로 보이게 하려는 것이다.
+1. ✅ **같은 기기 안**의 고정 경로 심링크(`memory/00. PH-B-24. Memory of comm` → `agent-hub/PH-B-24. Memory of comm`)는 쓴다. 규칙 실물을 한 벌로 두면서 메모리 폴더에서 "서랍"으로 보이게 하려는 것이다.
 2. ❌ **기기를 건너뛰는** 심링크(iCloud·드라이브 경유)는 금지. 260730에 정확히 그 구조로 `~/.claude/skills/` 심링크 4개가 끊겨 2주간 죽어 있었다 (26맥은 지금도 빈 폴더다 → [[cerry-link-symlink-recovery]]). 기기를 건너뛰는 일은 **깃이 담당한다.**
 
 **⚠️ 걸려 넘어질 자리 3가지**
-1. **`cerry-export` 는 메모리 사본에서 `00. rules` 를 제외한다.** 안 그러면 같은 규칙이 저장소에 세 벌(`PH-B-24` + 팹 사본 + 세리 사본) 들어간다.
+1. **`cerry-export` 는 메모리 사본에서 그 서랍을 제외한다.** 안 그러면 같은 규칙이 저장소에 세 벌(`PH-B-24` + 팹 사본 + 세리 사본) 들어간다.
 2. **26맥은 HTTPS(`gh` 로그인), 19맥은 SSH 키로 붙는다.** 26맥 SSH 키는 깃허브에 등록돼 있지 않다 — 26맥 원격을 SSH 로 바꾸면 인증이 깨진다.
 3. **저장소 삭제 권한이 없다.** `gh` 토큰에 `delete_repo` 스코프가 없어서, 저장소를 지우려면 페리가 웹에서 하거나 `gh auth refresh -h github.com -s delete_repo` 를 직접 돌려야 한다.
 
