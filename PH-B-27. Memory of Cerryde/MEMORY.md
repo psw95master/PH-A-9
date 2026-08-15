@@ -23,7 +23,7 @@
 
 - [AI Skill Notion DB](<03. reference/reference_ai_skill_notion_db.md>) — Crafted vs Imported Skill structure; imported GitHub bundles get only their flagship SKILL.md installed, not full installer
 - [Cerry Slack bot process](<03. reference/reference_cerry_slack_bot_process.md>) — lives at `~/apps/agents-in-slack` (never iCloud), launchd-managed; restart via `kickstart`, not `pkill`
-- [구글 문서 API 도구](<03. reference/reference_google_docs_api_setup.md>) — 페리가 구글 문서 읽어달라 하면 `~/apps/gdocs/`. 계정은 psw95master. 인증 깨지면 7일 만료 함정부터 의심
+- [구글 문서 API 도구](<03. reference/reference_google_docs_api_setup.md>) — 페리가 구글 문서 읽어달라 하면 `~/apps/gdocs/`. 계정은 psw95master. 인증 깨지면 7일 만료 함정부터 의심. **슬라이드 제작도 됨** — 새로 만들지 말고 기존 덱을 복사할 것 (페이지 규격 함정, 260815 추가)
 - [ID & log convention](<03. reference/reference_id_and_log_convention.md>) — `(코드)-(시리얼)-(넘버)` IDs; Drive logs are `{ID}_log_{YYMMDD}.md` with 배경/과정/결과 sections; reach Drive via MCP, never the mount (마운트는 로컬 CLI 에서도 폴더 절반이 막힌다 — 고치려 들지 말 것)
 - [메모리 드라이브 사본](<03. reference/reference_memory_copy_on_drive.md>) — 페리 보고용 사본은 읽기 전용 단방향(26맥 `cerry-export`). 폴더 이름 말고 링크로 찾아갈 것
 - [Obsidian 볼트 경로](<03. reference/reference_obsidian_vault_path.md>) — 사용자 폴더는 `perrykim` 이 아니라 `psw95`. ID 만 주어져도 볼트·홈·드라이브까지 훑어 찾을 것

@@ -1,8 +1,11 @@
 ---
 name: reference-google-docs-api-setup
-description: 구글 문서/드라이브/시트를 직접 읽고 쓰는 도구 — 19맥 `~/apps/gdocs/`. 계정·프로젝트·7일 함정 포함
-metadata:
+description: "구글 문서/드라이브/시트를 직접 읽고 쓰는 도구 — 19맥 `~/apps/gdocs/`. 계정·프로젝트·7일 함정 포함"
+metadata: 
+  node_type: memory
   type: reference
+  originSessionId: 7ffe1f91-8bfd-4a35-9e40-57d98ff70622
+  modified: 2026-08-15T07:03:13.647Z
 ---
 
 페리가 "이 구글 문서 읽어줘/고쳐줘" 하면 이 도구를 쓴다. 260803 구축, 26맥(팹)에도 같은 것이 깔려 있다.
@@ -15,6 +18,17 @@ metadata:
 ```
 
 `check.py` 는 읽기 전용 확인용이다. 실제 편집은 `venv/bin/python` 으로 새 스크립트를 짜서 Docs/Drive/Sheets API 를 호출하면 된다. 권한은 읽기·쓰기 모두 열려 있으니 **문서 수정은 되돌리기 어렵다 — 페리에게 확인받고 실행할 것.**
+
+## 슬라이드도 된다 (260815 확인)
+
+`auth.py` 의 SCOPES 에 `presentations` 가 없는데도 **Slides API 읽기·쓰기가 통과한다.** `drive` 스코프가 전체 접근이라 그렇다. 재인증 없이 `build("slides", "v1", ...)` 를 바로 쓰면 된다.
+
+**함정 두 개:**
+
+1. `presentations().create()` 로 새로 만들면 페이지가 **10 × 5.625 in** 이다. 원본 덱들은 **13.333 × 7.5 in** 이라 좌표가 통째로 잘린다. Slides API 는 페이지 크기 변경을 지원하지 않으므로, **기존 덱을 `drive.files().copy()` 로 복사한 뒤 슬라이드만 전부 지우고 새로 그리는 것**이 유일한 방법이다. 마스터·폰트 테마도 같이 딸려온다.
+2. `objectId` 는 **5자 이상**이어야 한다. `s1`, `o3` 같은 짧은 ID 는 400 으로 튕긴다.
+
+검수는 `presentations().pages().getThumbnail()` 로 PNG 를 받아 눈으로 본다. 텍스트 박스 겹침은 좌표 계산만으로는 안 잡히니 반드시 렌더링을 확인할 것.
 
 ## 인증
 
