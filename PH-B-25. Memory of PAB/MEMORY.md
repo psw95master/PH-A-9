@@ -35,6 +35,7 @@
 - [Cerry Slack bot process](<03. reference/reference_cerry_slack_bot_process.md>) — lives at `~/apps/agents-in-slack` (never iCloud), launchd-managed; restart via `kickstart`, not `pkill`
 - [클로드 앱 채팅은 알림이 없다](<03. reference/reference_claude_app_no_chat_notification.md>) — 홈 탭 일반 채팅은 답변이 끝나도 배너가 안 뜬다. 고장이 아니라 기능 부재라 **권한을 뒤지지 말 것**. "알림이 안 온다"를 들으면 어느 클로드인지 화면부터 확인
 - [구글 문서 API 도구](<03. reference/reference_google_docs_api_setup.md>) — 양쪽 맥 `~/apps/gdocs/`. 계정은 psw95master. 다른 기기로 옮길 땐 OAuth 재승인 말고 `token.json` 복사
+- [해머스푼 메뉴 훑기는 멈춘다](<03. reference/reference_hammerspoon_ax_menu_hangs.md>) — 여러 앱의 메뉴·접근성 트리를 훑으면 2분씩 멈춤 (260816 3회 실측). **앱 하나 + 메뉴 하나로 좁힐 것.** 레이캐스트 설정은 GUI 자동화 금지. `hs` CLI 경로와 `-t` 타임아웃 사용법 포함
 - [26맥 창 단축키 = 해머스푼](<03. reference/reference_hammerspoon_window_shortcuts.md>) — Rectangle은 260807 퇴역(다시 켜면 충돌). 등록 실패는 조용하니 개수로 확인, 맥 기본 단축키 해제는 재시동해야 반영
 - [ID & log convention](<03. reference/reference_id_and_log_convention.md>) — `(코드)-(시리얼)-(넘버)` IDs; Drive logs are `{ID}_log_{YYMMDD}.md` with 배경/과정/결과 sections; reach Drive via MCP, never the mount. 폴더명 규칙은 개편 중이라 제거됨
 - [메모리 서랍은 시작 폴더별로 갈린다](<03. reference/reference_memory_drawer_per_start_folder.md>) — 홈이 아닌 곳에서 띄우면 빈 서랍이 열려 이름·R&R을 모른 채 시작한다. "자기 이름을 모른다"는 신고는 권한 말고 **시작 폴더**부터 볼 것. 19맥 `~/projects`는 260812에 홈 서랍으로 심링크됨

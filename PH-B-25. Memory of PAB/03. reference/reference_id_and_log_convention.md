@@ -5,7 +5,7 @@ metadata:
   node_type: memory
   type: reference
   originSessionId: 00e7347f-3b7f-47d1-be5a-9498fc745316
-  modified: 2026-07-30T15:01:50.558Z
+  modified: 2026-08-16T08:54:18.225Z
 ---
 
 ## ID 체계
@@ -65,6 +65,15 @@ Body skeleton, shared by every log in the reference folder:
 Cross-references between logs use `[[문서명]]`. Superseded facts are kept but flagged with a `> ⚠️` callout naming what replaced them, rather than deleted.
 
 **Reference folder** (the format's source of truth): Drive folder ID `1CM35E62VHlDnnsCqOxrQ9r8n68cs5Fxa` — `PAB-A-1` 의 로그 폴더. **폴더 ID 는 이름을 바꿔도 그대로**이니 이름 말고 이 ID 로 찾을 것.
+
+## 로그 위치 — 드라이브 말고 깃허브인 경우가 있다 (260816 추가)
+
+`PH-A-13` 은 **공개** 깃허브 저장소(`psw95master/PH-A-13`)이고, 작업 로그가 `log/` 폴더 안에 쌓인다. 파일명은 드라이브와 같은 규칙 — `PH-A-13_log_260816.md`.
+
+- 260816 에 페리가 저장소를 만들면서 `log` 를 **빈 파일**로 만들어뒀다. 깃은 같은 이름을 파일과 폴더로 못 쓰므로, 그 파일을 지우고 `log/` 폴더로 바꿨다 (페리 확인 후 실행).
+- ⚠️ **공개 저장소다.** 규칙·메모리 사본이 있는 `PH-A-9` 는 비공개인데 이쪽은 아니다. 로그에 뭘 적을지 판단할 때 이 차이를 기억할 것. 관련: [[reference-shared-rules-git-repo]]
+- 커밋 메시지는 `[팹]` 으로 시작 (깃허브 계정이 하나라 안 적으면 구분 불가).
+- `gh api repos/.../contents/...` 로 넣는다. 로컬 클론은 없다.
 
 **Why:** This replaces the older iCloud pattern (`{코드}_00_log_{YYMMDD}.md` with flat `## N.` sections). Logs written before the migration still follow the old shape, so append to those in their own style rather than reformatting.
 
