@@ -1,1 +1,227 @@
+# PH-B-41. 터미널 리모트 컨트롤 자동연결
 
+> ⚠️ **이 저장소(PH-A-9)는 공개다.** 계정·주소·키를 여기에 적지 말 것.
+> 기기별 실제 값(SSH 주소, 계정)은 각 기기의 `~/.ssh/config` 와 노션 `PH-B-41` 에 있다.
+
+---
+
+## 목적 / 전제 / 제약 / 미확정 이슈
+
+**목적** — 새 맥에 이 기능을 다시 깔 때 처음부터 헤매지 않기 위한 설치·인계 문서.
+`cerryde claude` 한 줄로 원격 맥에 클로드코드 세션을 띄우고, 그 세션을 손앞 맥의 창으로 자동으로 여는 기능이다.
+
+**전제**
+1. 맥 두 대. **손앞 맥**(명령을 치는 쪽)과 **원격 맥**(클로드가 실제로 도는 쪽).
+2. 두 맥 사이 SSH 키 인증이 이미 된다. 별명 하나로 붙을 수 있다 (아래 문서에서는 `19macbook`).
+3. 원격 맥에 `tmux` 와 클로드코드 CLI 가 깔려 있다.
+4. 손앞 맥에 구글 크롬이 깔려 있다.
+
+**제약**
+1. 터널·웹터미널(ttyd 등)을 **깔지 않는다.** 리모트 컨트롤은 클로드코드 기본 기능이다.
+2. 원격 맥에 **들어오는 포트를 열지 않는다.** 바깥으로 나가는 연결만 쓴다.
+3. 세션 시작 폴더는 **홈이 아닌 일반 폴더**여야 한다. 홈은 신뢰가 저장되지 않아 매번 확인 창에 막히고, 그러면 자동 창 열기가 멈춘다.
+4. 세션 주소를 **화면에서 긁지 않는다.** 터미널 폭에 따라 잘린다. `--debug-file` 로그에서 꺼낸다.
+5. 주소 대기를 **백그라운드로 돌리지 않는다.** 백그라운드 ssh 는 `SIGTTIN` 으로 조용히 멈춘다.
+
+**미확정 이슈**
+1. 클로드코드 CLI·클로드 데스크톱 앱·크롬은 계속 바뀐다. 아래 "6. 버린 대안"의 판정은 **260820 시점 실측**이다. 다시 깔 때 그대로일 거라 단정하지 말 것.
+2. 원격 맥이 꺼져 있으면 아무것도 안 된다. 전원·절전 설정은 이 문서 밖의 일이다.
+
+---
+
+## 1. 이 기능이 하는 일
+
+`cerryde claude` 한 줄을 치면 순서대로 이렇게 된다.
+
+1. 원격 맥에 빈 번호를 찾아 `cerryde-N` 이라는 tmux 세션을 만든다.
+2. 그 안에서 클로드코드를 **리모트 컨트롤을 켠 채로** 띄운다. 이러면 같은 대화가 웹(`claude.ai`)과 폰 앱에도 뜬다.
+3. 세션 주소가 잡히면 손앞 맥에 **크롬 앱 창**(탭·주소창 없는 독립 창, 제목 `Claude Code`)으로 그 세션을 연다.
+4. 터미널도 같은 세션에 붙는다. 터미널·웹·폰 어디서 쳐도 같은 대화가 이어진다.
+
+tmux 안에서 돌기 때문에 SSH 가 끊기거나 창을 닫아도 세션은 죽지 않는다.
+
+---
+
+## 2. 다른 컴퓨터에 깔 때 — 먼저 확인할 것
+
+| 확인 | 방법 | 안 되면 |
+|---|---|---|
+| SSH 별명이 붙는가 | `ssh 19macbook echo ok` | `~/.ssh/config` 에 별명·주소·키를 먼저 잡는다 |
+| 원격 맥 tmux 경로 | `ssh 19macbook which tmux` | 경로가 다르면 함수 첫 줄 `local tmux=…` 를 고친다 |
+| 원격 맥 클로드 경로 | `ssh 19macbook which claude` | 경로가 다르면 아래 `\$HOME/.local/bin/claude` 를 고친다 |
+| 시작 폴더 존재 | `ssh 19macbook ls ~/projects` | 없으면 만들거나 `CERRYDE_CLAUDE_DIR` 로 바꾼다 |
+| 크롬 설치 | `ls /Applications/Google\ Chrome.app` | 없으면 "5. 브라우저를 바꾸려면" 참고 |
+
+---
+
+## 3. 설치
+
+손앞 맥의 `~/.zshrc` 에 아래 함수를 통째로 붙여넣는다. 그리고 새 터미널 창을 열거나 `source ~/.zshrc`.
+
+```zsh
+# 원격 맥 터미널 — 세션은 tmux로 유지되어 창을 닫아도 살아있음
+# cerryde        : 새 세션 생성 (cerryde-1, cerryde-2, ... 자동 번호)
+# cerryde list   : 세션 목록
+# cerryde 1      : cerryde-1 세션에 재접속
+# cerryde claude : 새 세션 + 클로드코드를 리모트컨트롤(웹/폰 연결) 켠 채로 실행
+# cerryde kill 1   : cerryde-1 세션 종료
+# cerryde kill all : 모든 세션 종료
+# cerryde keep 1   : cerryde-1만 남기고 나머지 전부 종료
+cerryde() {
+  local tmux=/usr/local/bin/tmux
+  case "$1" in
+    list)
+      ssh 19macbook "$tmux ls 2>/dev/null || echo '활성 세션 없음'" ;;
+    kill)
+      if [[ "$2" == all ]]; then
+        ssh 19macbook "$tmux ls -F '#{session_name}' 2>/dev/null | grep '^cerryde-' | xargs -n1 $tmux kill-session -t; echo '모든 세션 종료 완료'"
+      else
+        ssh 19macbook "$tmux kill-session -t cerryde-$2"
+      fi ;;
+    keep)
+      ssh 19macbook "$tmux ls -F '#{session_name}' 2>/dev/null | grep '^cerryde-' | grep -vx 'cerryde-$2' | xargs -n1 $tmux kill-session -t; echo '--- 남은 세션 ---'; $tmux ls 2>/dev/null || echo '활성 세션 없음'" ;;
+    "")
+      ssh -t 19macbook "n=1; while $tmux has-session -t cerryde-\$n 2>/dev/null; do n=\$((n+1)); done; $tmux new-session -s cerryde-\$n" ;;
+    claude)
+      # 홈에서 띄우면 신뢰 확인 창이 매번 떠서(홈은 신뢰가 저장 안 됨) 자동 웹창이 막힌다
+      local n log s url r dir="${CERRYDE_CLAUDE_DIR:-\$HOME/projects}"
+      # 1) 빈 번호를 받아 세션을 백그라운드로 띄운다
+      n=$(ssh -n 19macbook "n=1; while $tmux has-session -t cerryde-\$n 2>/dev/null; do n=\$((n+1)); done; echo \$n")
+      [[ -z "$n" ]] && { echo "원격 맥 연결 실패"; return 1; }
+      log="/tmp/cerryde-rc-$n.log"
+      ssh -n 19macbook "$tmux new-session -d -x 200 -y 50 -s cerryde-$n \"cd $dir && \$HOME/.local/bin/claude --remote-control --debug-file $log\""
+      # 2) 세션 주소가 로그에 뜰 때까지 기다렸다가 손앞 맥 브라우저로 연다.
+      #    백그라운드(&)로 돌리면 ssh가 터미널 입력을 붙잡으려다 정지해 버린다 — 반드시 앞에서 처리할 것.
+      #    ssh -n 도 같은 이유(stdin 차단). 260812에 이걸로 한 번 깨졌다.
+      printf 'cerryde-%s 준비 중… ' "$n"
+      s=$(ssh -n 19macbook "for i in \$(seq 1 45); do
+            h=\$(grep -oE 'sessions/cse_[A-Za-z0-9]+' $log 2>/dev/null | head -1)
+            if [ -n \"\$h\" ]; then echo \"\$h\"; exit 0; fi
+            sleep 1
+          done")
+      if [[ -n "$s" ]]; then
+        url="https://claude.ai/code/session_${s#sessions/cse_}"
+        echo "세션 창 여는 중"
+        # 크롬 앱 창(탭·주소창 없는 독립 창)으로 연다. 창 제목은 "Claude Code".
+        # ⚠️ claude.ai 가 크롬에 앱으로 설치돼 있으면, --app= 만 쓸 때 그런 창이 이미
+        #    떠 있으면 새 세션을 열지 않고 '옛 창을 앞으로 가져오기만' 한다.
+        #    그래서 지난 세션 화면이 그대로 보인다 (260820 실측). 기존 창이 있으면
+        #    주소를 새 세션으로 바꿔주고, 하나도 없을 때만 새 창을 띄운다.
+        # 사파리로 되돌리려면 아래 블록 전체를 이 한 줄로 바꾼다:
+        #   open -a Safari "$url"
+        r=$(osascript - "$url" <<'OSA' 2>/dev/null
+on run argv
+  set u to item 1 of argv
+  tell application "Google Chrome"
+    repeat with i from 1 to (count of windows)
+      if (URL of active tab of window i) contains "claude.ai/code/session_" then
+        set URL of active tab of window i to u
+        set index of window i to 1
+        activate
+        return "ok"
+      end if
+    end repeat
+  end tell
+  return "none"
+end run
+OSA
+)
+        [[ "$r" == ok ]] || open -na "Google Chrome" --args --app="$url"
+      else
+        echo "주소를 못 잡음 — 터미널 화면의 주소를 직접 클릭하세요"
+      fi
+      # 3) 터미널도 그대로 붙여준다
+      ssh -t 19macbook "$tmux attach -t cerryde-$n" ;;
+    *)
+      ssh -t 19macbook "$tmux attach -t cerryde-$1" ;;
+  esac
+}
+```
+
+**고칠 곳 3개** — 다른 컴퓨터에서는 이것만 확인하면 된다.
+
+1. `19macbook` — 원격 맥의 SSH 별명. 실제 주소는 `~/.ssh/config` 에 둔다. **이 문서에 적지 않는다.**
+2. `local tmux=/usr/local/bin/tmux` — 원격 맥의 tmux 경로.
+3. `CERRYDE_CLAUDE_DIR` — 세션 시작 폴더. 기본값 `~/projects`. 환경변수로 덮어쓸 수 있다.
+
+---
+
+## 4. 사용법
+
+| 명령 | 하는 일 |
+|---|---|
+| `cerryde claude` | 새 세션 + 클로드코드(리모트 컨트롤) + 창 자동 열기 |
+| `cerryde` | 클로드 없이 빈 원격 터미널 세션 |
+| `cerryde list` | 살아 있는 세션 목록 |
+| `cerryde 3` | `cerryde-3` 에 재접속 |
+| `cerryde kill 3` / `kill all` | 종료 |
+| `cerryde keep 3` | `cerryde-3` 만 남기고 전부 종료 |
+
+**완료 확인** — `cerryde claude` 한 줄로 확인 창 없이 크롬 앱 창이 뜨고, 그 창에 **채팅 입력칸이 보이면** 성공이다.
+
+---
+
+## 5. 동작 원리 — 왜 이렇게 짰나
+
+**주소를 로그에서 꺼내는 이유.** 클로드코드는 시작할 때 세션 주소를 화면에 찍지만, 터미널 폭이 좁으면 잘린다. `--debug-file` 로 남긴 로그에서 `sessions/cse_XXXX` 를 꺼내 `https://claude.ai/code/session_XXXX` 로 조립한다. 로그의 `cse_` 뒤 문자열과 웹 주소의 `session_` 뒤 문자열은 **같다**(260820 확인).
+
+**대기를 앞단에서 하는 이유.** 주소가 로그에 뜨기까지 몇 초 걸린다. 이 대기를 `&` 로 백그라운드에 넘기면 ssh 가 터미널 입력을 붙잡으려다 `SIGTTIN` 으로 조용히 멈춘다 — 에러도 안 난다. 그래서 앞단에서 기다리고, ssh 에 `-n`(stdin 차단)을 붙인다. 260812에 이걸로 한 번 깨졌다.
+
+**창을 재사용하는 이유.** 아래 6-3 참고. 크롬이 `--app=` 요청을 새 창이 아니라 **기존 창 앞으로 가져오기**로 처리하기 때문에, 새 세션을 열어도 지난 세션 화면이 그대로 보인다. 그래서 기존 창을 찾아 주소를 직접 바꾼다.
+
+⚠️ **부작용** — `Claude Code` 앱 창은 **하나만 재사용된다.** `cerryde claude` 를 또 돌리면 같은 창이 새 세션으로 바뀐다. 세션마다 창을 따로 띄우려면 이 부분을 다시 설계해야 한다.
+
+---
+
+## 6. 검토했다 버린 대안 (260820 실측)
+
+다시 깔 때 **같은 길을 또 파지 않기 위한 기록**이다. 넷 다 "될 것 같은데 안 되는" 것들이다.
+
+### 6-1. 클로드 데스크톱 앱으로 열기 — 불가
+`open -a Claude "https://claude.ai/code/session_XXX"` → **아무 반응 없음.** 앱이 `https` 주소를 받지 않는다 (associated-domains 권한이 없어 유니버설 링크 대상이 아니다).
+
+`claude://` 딥링크도 안 된다. 앱 안에 **허용 목록이 박혀 있고** 거기엔 `/new`, `/chat/<uuid>`, `/project/<uuid>` 셋뿐이다. 코드 세션 주소는 목록에 없어 조용히 무시된다.
+- `claude://claude.ai/code` → 제목만 `코드`인 **빈 검은 창**
+- `claude://claude.ai/epitaxy/session_XXX` → 반응 없음 (팝아웃 창이 실제로 쓰는 주소인데도 거부)
+- `open -a Claude --args "https://…"` → 그냥 앱만 켜짐
+
+### 6-2. 크롬 PWA 단축 앱(`~/Applications/Chrome Apps.localized/Claude.app`)에 주소 넘기기 — 불가
+두 번 시도했고 둘 다 주소를 무시하고 자기 시작 주소(`claude.ai/new`)만 열었다. 이 shim 앱은 URL 인자를 받지 않는다.
+
+### 6-3. `--app=` 한 줄만 쓰기 — 반만 됨 ⚠️ **가장 헷갈린 함정**
+`open -na "Google Chrome" --args --app="<주소>"` 는 **앱 창이 하나도 없을 때만** 새 창을 만든다. `claude.ai` 가 크롬에 앱으로 설치돼 있으면, 그런 창이 이미 떠 있을 때는 새 창을 안 만들고 **기존 창을 앞으로 가져오기만** 한다. 주소는 안 바뀐다.
+
+증상이 고약하다 — 창은 뜨는데 **지난 세션(대개 종료돼서 "이 세션은 보관되었습니다"로 보임)** 이 나온다. 브라우저 탓으로 오해하기 쉽다. 크롬 실행 파일을 직접 불러도(`.../MacOS/Google Chrome --app=…`) 결과는 같다.
+
+→ 그래서 AppleScript 로 기존 창을 찾아 주소를 바꾸고, 없을 때만 `--app=` 로 새로 띄운다.
+
+### 6-4. 앱의 팝아웃 기록 파일 손대기 — 기각
+클로드 데스크톱 앱은 `~/Library/Application Support/Claude/session-popouts.json` 에 팝아웃 창 목록을 적어두고 다음 실행 때 복원한다. 여기에 세션을 끼워 넣으면 새 창으로 뜨는 건 확인했다. 그러나 **앱을 껐다 켜야 하고**, 앱이 켜져 있으면 이 파일이 덮어써진다. 자동화에 못 쓴다.
+
+---
+
+## 7. 문제 해결
+
+| 증상 | 원인 | 조치 |
+|---|---|---|
+| 창은 뜨는데 "이 세션은 보관되었습니다" | 6-3 함정. 옛 창이 앞으로 온 것 | 이 문서의 AppleScript 블록이 들어갔는지 확인 |
+| `주소를 못 잡음` 이 뜬다 | 45초 안에 로그에 주소가 안 나옴 | 원격 맥에서 `cat /tmp/cerryde-rc-N.log` 로 확인. 신뢰 확인 창에 막혔을 수 있다 → 시작 폴더가 홈인지 확인 |
+| 매번 신뢰 확인 창이 뜬다 | 시작 폴더가 홈 | `CERRYDE_CLAUDE_DIR` 를 일반 폴더로 |
+| 아무 반응 없이 멈춘다 | 주소 대기를 백그라운드로 돌림 | `&` 를 빼고 ssh 에 `-n` 을 붙인다 |
+| `원격 맥 연결 실패` | SSH 별명이 안 붙음 | `ssh 19macbook echo ok` 부터 확인 |
+
+---
+
+## 8. 브라우저를 바꾸려면
+
+함수 안 `if [[ -n "$s" ]]; then` 블록의 창 여는 부분만 갈아끼우면 된다.
+
+1. **사파리 (가장 단순)** — `open -a Safari "$url"`. 매번 새 탭이라 6-3 함정이 없다. 대신 탭이 쌓인다.
+2. **크롬 일반 탭** — `open -a "Google Chrome" "$url"`.
+3. **크롬 앱 창 (현재 방식)** — 위 3장의 블록 그대로.
+
+---
+
+**판단 기록**
+- 260812 — 주소 대기를 앞단으로, ssh `-n` 추가 (백그라운드 정지 사고)
+- 260820 — 브라우저를 사파리에서 크롬 앱 창으로 교체. 6-1·6-2·6-4 불가 판정, 6-3 함정 발견 및 우회 확정
